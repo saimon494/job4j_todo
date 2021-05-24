@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <title>ToDo</title>
 </head>
 <body>
@@ -20,84 +21,21 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function () {
-        show();
-        setInterval('show()', 1000);
-    });
-
-    function show() {
-        $.ajax({
-            type: 'GET',
-            url: 'http://localhost:8080/todo/item'
-        }).done(function (data) {
-            const tbody = document.querySelector('tbody');
-            const trs = document.querySelectorAll('tbody tr');
-            const showAll = document.querySelector('#show_all');
-            $.each(trs, function (i, e) {
-                e.remove();
-            });
-            $.each(JSON.parse(data), function (i, e) {
-                if (!showAll.checked && e.done) {
-                    return;
-                }
-                const tr = document.createElement('tr');
-                const num = document.createElement('td');
-                const desc = document.createElement('td');
-                const date = document.createElement('td');
-                num.innerText = e.id;
-                desc.innerText = e.description;
-                date.innerText = e.created;
-                tr.append(num);
-                tr.append(desc);
-                tr.append(date);
-                tbody.append(tr);
-            });
-        }).fail(function (err) {
-            alert(err);
-        });
-    }
-
-    function addItem() {
-        const desc = document.querySelector('#description');
-        const done = document.querySelector('#done');
-        if (desc.value === '') {
-            alert('Добавьте задание');
-            done.checked = false;
-            return;
-        }
-        const item = {
-            description: desc.value,
-            done: done.checked
-        };
-        $.ajax({
-            type: 'PUT',
-            url: 'http://localhost:8080/todo/item',
-            data: JSON.stringify(item),
-        }).done(function (data) {
-            desc.value = '';
-            done.checked = false;
-        }).fail(function (err) {
-            alert(err);
-        });
-    }
-</script>
+<script type="text/javascript" src="js/task.js"></script>
 <div class="container">
     <div class="row pt-3">
         <h4>ToDo</h4>
     </div>
     <div class="row-5">
         <form class="form-group row mb-0">
-            <div class="form-check col-1">
-                <input type="checkbox" class="form-check-input" id="done" name="done" title="Выполнено">
-                <label class="form-check-label" for="done"></label>
+            <div class="form-group col-3 mb-0 p-0">
+                <label>
+                    <textarea class="form-control" id="description"
+                              placeholder="Добавить задание" name="description" rows="1"></textarea>
+                </label>
             </div>
-            <div class="form-group col-4 mb-0 pl-0">
-                <label><input type="text" class="form-control" id="description"
-                              placeholder="Добавить задание" name="description"></label>
-            </div>
-            <div class="form-group col-2 mb-0">
-                <button type="button" class="btn btn-default" onclick="addItem()">Добавить</button>
+            <div class="form-group col-1 mb-0">
+                <i class="bi bi-plus-square" style="font-size: 1.8rem; color: #007bff;" onclick="addItem()"></i>
             </div>
         </form>
     </div>
@@ -107,15 +45,16 @@
     <div class="row">
         <div class="form-check pb-2">
             <input type="checkbox" class="form-check-input" id="show_all" name="show_all">
-            <label class="form-check-label" for="show_all">Показать все</label>
+            <label class="form-check-label" for="show_all">Показать выполненные</label>
         </div>
     </div>
     <table class="table table-hover">
         <thead>
         <tr>
-            <th scope="col" style="width:5%">№</th>
+            <th scope="col" style="width:4%">№</th>
             <th scope="col" style="width:55%">Описание</th>
-            <th scope="col" style="width:40%">Дата создания</th>
+            <th scope="col" style="width:35%">Дата создания</th>
+            <th scope="col" style="width:6%"></th>
         </tr>
         </thead>
         <tbody>

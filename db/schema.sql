@@ -6,4 +6,4 @@ CREATE TABLE item
     done        boolean
 );
 
--- truncate table item restart identity;
+--truncate table item restart identity;
