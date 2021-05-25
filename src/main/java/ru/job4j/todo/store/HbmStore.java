@@ -2,12 +2,14 @@ package ru.job4j.todo.store;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todo.model.Item;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class HbmStore implements Store, AutoCloseable {
 
@@ -24,57 +26,56 @@ public class HbmStore implements Store, AutoCloseable {
         return Lazy.INST;
     }
 
+    private <T> T tx(final Function<Session, T> command) {
+        final Session session = sf.openSession();
+        final Transaction tx = session.beginTransaction();
+        try {
+            T rsl = command.apply(session);
+            tx.commit();
+            return rsl;
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
     @Override
     public List<Item> findAllItem() {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List result = session.createQuery("FROM ru.job4j.todo.model.Item").list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return tx(session -> session.createQuery("FROM ru.job4j.todo.model.Item").list());
     }
 
     @Override
     public Item findItemById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Item result = session.get(Item.class, id);
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return tx(session -> session.get(Item.class, id));
     }
 
     @Override
-    public Item save(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.save(item);
-        session.getTransaction().commit();
-        session.close();
-        return item;
+    public boolean save(Item item) {
+        tx(session -> session.save(item));
+        return true;
     }
 
     @Override
-    public void delete(int id) {
-        Item item = findItemById(id);
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.delete(item);
-        session.getTransaction().commit();
-        session.close();
+    public boolean delete(int id) {
+        return tx(session -> {
+            Item item = session.get(Item.class, id);
+            session.delete(item);
+            return true;
+        });
     }
 
     @Override
-    public void update(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.update(item);
-        session.getTransaction().commit();
-        session.close();
+    public boolean update(Item item) {
+        return tx(session -> {
+            session.update(item);
+            return true;
+        });
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         StandardServiceRegistryBuilder.destroy(registry);
     }
 }

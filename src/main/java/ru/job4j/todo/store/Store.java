@@ -10,9 +10,9 @@ public interface Store {
 
     Item findItemById(int id);
 
-    Item save(Item item);
+    boolean save(Item item);
 
-    void delete(int id);
+    boolean delete(int id);
 
-    void update(Item item);
+    boolean update(Item item);
 }
