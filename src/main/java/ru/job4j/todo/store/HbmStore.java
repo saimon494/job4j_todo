@@ -53,8 +53,10 @@ public class HbmStore implements Store, AutoCloseable {
 
     @Override
     public boolean save(Item item) {
-        tx(session -> session.save(item));
-        return true;
+        return tx(session -> {
+            session.saveOrUpdate(item);
+            return true;
+        });
     }
 
     @Override
@@ -62,14 +64,6 @@ public class HbmStore implements Store, AutoCloseable {
         return tx(session -> {
             Item item = session.get(Item.class, id);
             session.delete(item);
-            return true;
-        });
-    }
-
-    @Override
-    public boolean update(Item item) {
-        return tx(session -> {
-            session.update(item);
             return true;
         });
     }

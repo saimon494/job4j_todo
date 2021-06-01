@@ -1,121 +1,82 @@
 $(document).ready(function () {
-    show();
-    setInterval('show()', 2000);
+    load();
 });
 
-function show() {
-    console.log('show()');
+function load() {
+    let showAll = $('#show-all')[0].checked;
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:8080/todo/item'
+        url: 'http://localhost:8080/todo/item',
+        data: {showAll: showAll},
+        dataType: 'json'
     }).done(function (data) {
-        const tbody = document.querySelector('tbody');
-        const trs = document.querySelectorAll('tbody tr');
-        const showAll = document.querySelector('#show_all');
-        console.log(showAll.checked);
-        $.each(trs, function (i, e) {
-            console.log('e.remove()');
-            e.remove();
-        });
-        $.each(JSON.parse(data), function (i, e) {
-            console.log(e);
-            if (!showAll.checked && e.done) {
-                console.log('return');
-                return;
-            }
-            const tr = document.createElement('tr');
-            const num = document.createElement('td');
-            const desc = document.createElement('td');
-            const date = document.createElement('td');
-            const input = document.createElement('input');
-            const delIcon = document.createElement('i');
-            num.innerText = e.id;
-            desc.innerText = e.description;
-            date.innerText = e.created;
-            input.setAttribute("type", "checkbox");
-            input.setAttribute("class", "form-check-input");
-            input.setAttribute("id", "done");
-            input.setAttribute("title", "Выполнить");
-            input.setAttribute("style", "vertical-align: middle; position: relative;");
-            if (e.done) {
-                input.setAttribute("checked", "true");
+        let table = '';
+        data.forEach(el => {
+            table += '<tr>';
+            table += '<td class="align-middle">' + el.id + '</td>';
+            table += '<td class="align-middle">' + el.description + '</td>';
+            table += '<td class="align-middle">' + el.created + '</td>';
+            if (el.done === false) {
+                table += '<td style="text-align: center;">' +
+                    '<div style="vertical-align: middle;">' +
+                    '<label for="done">' +
+                    '<input type="checkbox" class="form-check-input" id="done" title="Выполнить" onchange="checkItem(' + el.id + ');" ' +
+                    'style="vertical-align: middle; margin-left: -0.5rem;"></label>' +
+                    '<i class="bi bi-x" id="delete" title="Удалить" onclick="deleteItem(' + el.id + ');" style="font-size: 1.8rem; color: #007bff; float: right;"></i>' +
+                    '</td>';
             } else {
-                input.setAttribute("value", "checked");
+                table += '<td style="text-align: center;">' +
+                    '<i class="bi bi-x" id="delete" title="Удалить" onclick="deleteItem(' + el.id + ');" style="font-size: 1.8rem; color: #007bff; float: right;"></i></div>' +
+                    '</td>';
             }
-            delIcon.setAttribute("class", "bi bi-x");
-            delIcon.setAttribute("id", "delete");
-            delIcon.setAttribute("title", "Удалить");
-            delIcon.setAttribute("style", "font-size: 1.8rem; color: #007bff; vertical-align: middle; position: relative;");
-            tr.append(num);
-            tr.append(desc);
-            tr.append(date);
-            tr.append(input);
-            tr.append(delIcon);
-            tbody.append(tr);
-            checkItem(e);
-            deleteItem(e.id);
+            table += '</tr>';
         });
+        $('#table tbody').html(table);
     }).fail(function (err) {
         alert(err);
     });
 }
 
 function addItem() {
-    console.log('addItem()');
-    const desc = document.querySelector('#description');
-    if (desc.value === '') {
+    let desc = $('#desc').val();
+    if (desc === '') {
         alert('Добавьте задание');
         return;
     }
     const item = {
-        description: desc.value,
+        description: desc,
     };
     $.ajax({
         type: 'PUT',
         url: 'http://localhost:8080/todo/item',
         data: JSON.stringify(item)
     }).done(function () {
-        desc.value = '';
+        load();
     }).fail(function () {
         alert("Не удалось добавить задание");
     });
 }
 
-function checkItem(item) {
-    console.log('checkItem()');
-    $("tr #done").change(function () {
-        if (this.checked) {
-            item.done = true;
-        } else {
-            item.done = false;
-        }
-        $.ajax({
-            type: 'PUT',
-            url: 'http://localhost:8080/todo/item',
-            data: JSON.stringify(item)
-        }).done(function () {
-            show();
-        }).fail(function () {
-            alert("Не удалось выбрать задание");
-        });
-        console.log(item);
+function checkItem(id) {
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/todo/item',
+        data: {id: id},
+    }).done(function () {
+        load();
+    }).fail(function () {
+        alert("Не удалось выбрать задание");
     });
 }
 
 function deleteItem(id) {
-    console.log('deleteItem()');
-    var row = $(this).closest('tr');
-    // var row = $(this).parent().parent();
-    $("tr #delete").click(function () {
-        $.ajax({
-            type: 'POST',
-            url: 'http://localhost:8080/todo/delete',
-            data: {id: id},
-        }).done(function () {
-            row.remove();
-            // show();
-        }).fail(function () {
-            alert("Не удалось удалить задание");
-        });
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/todo/delete',
+        data: {id: id},
+    }).done(function () {
+        load();
+    }).fail(function () {
+        alert("Не удалось удалить задание");
     });
 }

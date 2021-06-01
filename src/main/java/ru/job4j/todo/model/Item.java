@@ -19,9 +19,8 @@ public class Item {
     public Item() {
     }
 
-    public Item(String description, boolean done) {
+    public Item(String description) {
         this.description = description;
-        this.done = done;
     }
 
     public int getId() {

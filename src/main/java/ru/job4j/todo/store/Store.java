@@ -14,5 +14,4 @@ public interface Store {
 
     boolean delete(int id);
 
-    boolean update(Item item);
 }
