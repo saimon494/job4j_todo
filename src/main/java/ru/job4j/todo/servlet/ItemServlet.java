@@ -2,6 +2,7 @@ package ru.job4j.todo.servlet;
 
 import com.google.gson.Gson;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.store.HbmStore;
 
 import javax.servlet.http.HttpServlet;
@@ -30,6 +31,7 @@ public class ItemServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Gson gson = new Gson();
         Item item = gson.fromJson(req.getReader().readLine(), Item.class);
+        item.setUser((User) req.getSession().getAttribute("user"));
         HbmStore.instOf().save(item);
     }
 

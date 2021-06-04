@@ -1,9 +1,44 @@
 $(document).ready(function () {
+    auth()
     load();
 });
 
+function auth() {
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/todo/auth',
+        dataType: 'json'
+    }).done(function (data) {
+        let a1 = $('#a1');
+        let a2 = $('#a2');
+        if (data.name === undefined) {
+            a1.text("Войти").attr("href", "http://localhost:8080/todo/login.html");
+            a2.text("Регистрация").attr("href", "http://localhost:8080/todo/reg.html");
+        } else {
+            a1.text(data.name);
+            a2.text("Выйти").attr("onclick", "logout();");
+        }
+    }).fail(function () {
+        alert('Ошибка авторизации');
+    });
+}
+
+function logout() {
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/todo/logout',
+        success: function(){
+            auth();
+        },
+        error: function(){
+            alert('Ошибка выхода');
+        }
+    });
+}
+
 function load() {
     let showAll = $('#show-all')[0].checked;
+    console.log("showAll = " + showAll);
     $.ajax({
         type: 'GET',
         url: 'http://localhost:8080/todo/item',
@@ -16,6 +51,11 @@ function load() {
             table += '<td class="align-middle">' + el.id + '</td>';
             table += '<td class="align-middle">' + el.description + '</td>';
             table += '<td class="align-middle">' + el.created + '</td>';
+            if (el.user === undefined) {
+                table += '<td class="align-middle">Anonymous</td>';
+            } else {
+                table += '<td class="align-middle">' + el.user.name + '</td>';
+            }
             if (el.done === false) {
                 table += '<td style="text-align: center;">' +
                     '<div style="vertical-align: middle;">' +
