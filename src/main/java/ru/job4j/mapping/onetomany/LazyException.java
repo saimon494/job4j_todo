@@ -6,38 +6,31 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-public class OneToMany {
+import java.util.ArrayList;
+import java.util.List;
+
+public class LazyException {
 
     public static void main(String[] args) {
+        List<Brand> brands = new ArrayList<>();
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         try {
             SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             Session session = sf.openSession();
             session.beginTransaction();
-            var bmw = new Brand("BMW");
-            var model1 = new Model("M3");
-            model1.setBrand(bmw);
-            var model2 = new Model("M5");
-            model2.setBrand(bmw);
-            var model3 = new Model("X1");
-            model3.setBrand(bmw);
-            var model4 = new Model("X5");
-            model4.setBrand(bmw);
-            var model5 = new Model("X7");
-            model5.setBrand(bmw);
-            session.save(model1);
-            session.save(model2);
-            session.save(model3);
-            session.save(model4);
-            session.save(model5);
-            session.save(bmw);
+            brands = session.createQuery(
+                    "select distinct b from Brand b join fetch b.models"
+            ).list();
             session.getTransaction().commit();
             session.close();
-        } catch (Exception e) {
+        }  catch (Exception e) {
             e.printStackTrace();
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
+        }
+        for (Model model : brands.get(0).getModels()) {
+            System.out.println(model);
         }
     }
 }

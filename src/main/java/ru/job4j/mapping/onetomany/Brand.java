@@ -14,7 +14,7 @@ public class Brand {
     private int id;
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "brand")
     private List<Model> models = new ArrayList<>();
 
     public Brand() {
@@ -42,5 +42,20 @@ public class Brand {
 
     public void addModel(Model model) {
         models.add(model);
+    }
+
+    public List<Model> getModels() {
+        return models;
+    }
+
+    public void setModels(List<Model> models) {
+        this.models = models;
+    }
+
+    @Override
+    public String toString() {
+        return "Brand{"
+                + "name='" + name + '\''
+                + '}';
     }
 }
