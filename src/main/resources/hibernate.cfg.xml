@@ -19,5 +19,7 @@
 
         <mapping class="ru.job4j.todo.model.Item" />
         <mapping class="ru.job4j.todo.model.User" />
+        <mapping class="ru.job4j.mapping.onetomany.Brand" />
+        <mapping class="ru.job4j.mapping.onetomany.Model" />
     </session-factory>
 </hibernate-configuration>
