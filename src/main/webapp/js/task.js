@@ -1,6 +1,7 @@
 $(document).ready(function () {
-    auth()
-    load();
+    auth();
+    loadCategory();
+    loadTable();
 });
 
 function auth() {
@@ -36,7 +37,23 @@ function logout() {
     });
 }
 
-function load() {
+function loadCategory() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8080/todo/category',
+    }).done(function(data) {
+        $.each(JSON.parse(data), function (i, e) {
+            const option = document.createElement('option');
+            option.value = e.id;
+            option.innerText = e.name;
+            document.querySelector('#categories').append(option);
+        });
+    }).fail(function() {
+        alert("Ошибка загрузки категорий");
+    });
+}
+
+function loadTable() {
     let showAll = $('#show-all')[0].checked;
     console.log("showAll = " + showAll);
     $.ajax({
@@ -50,6 +67,12 @@ function load() {
             table += '<tr>';
             table += '<td class="align-middle">' + el.id + '</td>';
             table += '<td class="align-middle">' + el.description + '</td>';
+            let catStr = '';
+            $.each(el.categories, function (i, c) {
+                catStr = catStr + c.name + ', ';
+            });
+            catStr = catStr.substring(0, catStr.length - 2);
+            table += '<td class="align-middle">' + catStr + '</td>';
             table += '<td class="align-middle">' + el.created + '</td>';
             if (el.user === undefined) {
                 table += '<td class="align-middle">Anonymous</td>';
@@ -83,15 +106,30 @@ function addItem() {
         alert('Добавьте задание');
         return;
     }
+    let select = document.querySelector('#categories');
+    if (select.value === '') {
+        alert('Выберите категорию');
+        return;
+    }
+    let categories = [];
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].selected) {
+            categories.push({
+                id: select.options[i].value,
+                name: select.options[i].innerText
+            });
+        }
+    }
     const item = {
         description: desc,
+        categories: categories
     };
     $.ajax({
         type: 'PUT',
         url: 'http://localhost:8080/todo/item',
         data: JSON.stringify(item)
     }).done(function () {
-        load();
+        loadTable();
     }).fail(function () {
         alert("Не удалось добавить задание");
     });
@@ -103,7 +141,7 @@ function checkItem(id) {
         url: 'http://localhost:8080/todo/item',
         data: {id: id},
     }).done(function () {
-        load();
+        loadTable();
     }).fail(function () {
         alert("Не удалось выбрать задание");
     });
@@ -115,7 +153,7 @@ function deleteItem(id) {
         url: 'http://localhost:8080/todo/delete',
         data: {id: id},
     }).done(function () {
-        load();
+        loadTable();
     }).fail(function () {
         alert("Не удалось удалить задание");
     });

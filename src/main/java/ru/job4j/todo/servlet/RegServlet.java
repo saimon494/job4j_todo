@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 public class RegServlet extends HttpServlet {
 
@@ -26,7 +28,8 @@ public class RegServlet extends HttpServlet {
             store.save(new User(name, email, password));
             json.addProperty("result", true);
         }
-        PrintWriter writer = new PrintWriter(resp.getOutputStream());
+        PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(resp.getOutputStream(), StandardCharsets.UTF_8));
         writer.println(json);
         writer.flush();
     }

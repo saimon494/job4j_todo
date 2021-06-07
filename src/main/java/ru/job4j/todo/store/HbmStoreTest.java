@@ -63,4 +63,10 @@ public class HbmStoreTest {
         var out = store.findAllUser();
         assertThat(out, is(expected));
     }
+
+    @Test
+    public void findAllCategory() {
+        var out = store.findAllCategory();
+        assertThat(out.size(), is(4));
+    }
 }

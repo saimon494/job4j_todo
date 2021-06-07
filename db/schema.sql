@@ -4,7 +4,7 @@ create table item
     description varchar(50),
     created     timestamp,
     done        boolean,
-    user_id     integer references i_user(id)
+    user_id     integer references i_user (id)
 );
 
 create table i_user
@@ -15,5 +15,15 @@ create table i_user
     password varchar(50)
 );
 
---truncate table item restart identity;
+create table category
+(
+    id   serial primary key,
+    name text
+);
+insert into category(name) values ('Home');
+insert into category(name) values ('Job');
+insert into category(name) values ('Learning');
+insert into category(name) values ('Family');
+
+--truncate table item restart identity cascade;
 --truncate table i_user restart identity cascade;

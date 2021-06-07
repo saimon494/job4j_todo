@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 
@@ -44,7 +45,9 @@ public class HbmStore implements Store, AutoCloseable {
 
     @Override
     public List<Item> findAllItem() {
-        return tx(session -> session.createQuery("FROM ru.job4j.todo.model.Item").list());
+        return tx(session -> session.createQuery(
+                "select distinct i from Item i join fetch i.categories"
+        ).list());
     }
 
     @Override
@@ -88,6 +91,13 @@ public class HbmStore implements Store, AutoCloseable {
             session.saveOrUpdate(user);
             return true;
         });
+    }
+
+    @Override
+    public List<Category> findAllCategory() {
+        return tx(session -> session.createQuery(
+                "from ru.job4j.todo.model.Category"
+        ).list());
     }
 
     @Override

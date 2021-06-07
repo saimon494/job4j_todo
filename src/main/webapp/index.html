@@ -25,28 +25,43 @@
 <script type="text/javascript" src="js/task.js"></script>
 <div class="container pt-3">
     <div class="row">
-        <ul class="nav" id="auth">
-            <li class="nav-item"><a class="nav-link" href="#" id="a1"></a></li>
-            <li class="nav-item"><a class="nav-link" href="#" id="a2"></a></li>
-        </ul>
-    </div>
-</div>
-<div class="container pt-3">
-    <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Добавить задание
+                <div class="form-row">
+                    <div class="col-md-8 my-auto">
+                        <h4 style="margin-bottom: 0">ToDo</h4>
+                    </div>
+                    <div class="col-md-4 my-auto">
+                        <div class="float-right">
+                            <ul class="nav" id="auth">
+                                <li class="nav-item"><a class="nav-link" href="#" id="a1"></a></li>
+                                <li class="nav-item"><a class="nav-link" href="#" id="a2"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body mb-0">
                 <form>
-                    <div class="form-group mb-0">
-                        <label for="desc" style="width:50%; margin-bottom: 0">
-                            <input type="text" class="form-control" id="desc" title="Описание"
-                                   placeholder="Описание">
-                        </label>
-                        <i class="bi bi-plus-square" onclick="addItem()"
-                           style="font-size: 1.8rem; color: #007bff; vertical-align: middle; position: relative;">
-                        </i>
+                    <div class="form-group row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="desc" style="width: 100%;">Добавьте задание
+                                <textarea class="form-control" id="desc" title="Описание"
+                                          placeholder="Описание" rows="3">
+                                </textarea>
+                            </label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="categories" style="width: 80%; margin-bottom: 0">Выберите категорию</label>
+                            <select multiple class="form-control" id="categories"
+                                    style="width: 80%; margin-bottom: 0"></select>
+                        </div>
+                        <div class="form-group col-md-2 pl-0 pt-4">
+                            <label for="btn">
+                                <button type="button" onclick="addItem()" class="btn btn-primary" id="btn">Добавить
+                                </button>
+                            </label>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -58,8 +73,9 @@
         <div class="card" style="width: 100%">
             <div class="card-header">
                 <label for="show-all" style="margin-bottom: 0">
-                    <input type="checkbox" id="show-all" data-toggle="toggle" data-onstyle="success" data-offstyle="warning"
-                           data-on="Все задания" data-off="Невыполненные задания" onchange="load();">
+                    <input type="checkbox" id="show-all" data-toggle="toggle" data-onstyle="success"
+                           data-offstyle="warning"
+                           data-on="Все задания" data-off="Невыполненные задания" onchange="loadTable();">
                 </label>
             </div>
             <div class="card-body pt-0 pb-0">
@@ -67,9 +83,10 @@
                     <thead>
                     <tr>
                         <th scope="col" style="width:2%">№</th>
-                        <th scope="col" style="width:50%">Описание</th>
+                        <th scope="col" style="width:40%">Описание</th>
+                        <th scope="col" style="width:15%">Категория</th>
                         <th scope="col" style="width:25%">Дата создания</th>
-                        <th scope="col" style="width:20%">Автор</th>
+                        <th scope="col" style="width:10%">Автор</th>
                         <th scope="col" style="width:3%">Статус</th>
                     </tr>
                     </thead>
