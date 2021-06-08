@@ -21,14 +21,17 @@ public class HbmStoreTest {
 
     @Test
     public void findAllItem() {
-        var item = new Item("task 1");
+        var item1 = new Item("task 1");
         var item2 = new Item("task 2");
-        store.save(item);
+        var list = store.findAllCategory();
+        item1.addCategory(list.get(1));
+        item2.addCategory(list.get(0));
+        store.save(item1);
         store.save(item2);
-        var expected = List.of(item, item2);
+        var expected = List.of(item1, item2);
         var out = store.findAllItem();
         assertThat(out, is(expected));
-        store.delete(item.getId());
+        store.delete(item1.getId());
         store.delete(item2.getId());
     }
 
@@ -47,7 +50,7 @@ public class HbmStoreTest {
         store.save(item);
         item.setDescription("task 2");
         item.setDone(false);
-        store.save(item);
+        store.update(item.getId());
         var rsl = store.findItemById(item.getId());
         assertThat(rsl, is(item));
         store.delete(item.getId());

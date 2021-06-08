@@ -38,9 +38,6 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)  {
         int id = Integer.parseInt(req.getParameter("id"));
-        var store = HbmStore.instOf();
-        Item item = store.findItemById(id);
-        item.setDone(true);
-        store.save(item);
+        HbmStore.instOf().update(id);
     }
 }

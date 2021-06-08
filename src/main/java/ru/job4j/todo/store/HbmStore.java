@@ -58,7 +58,19 @@ public class HbmStore implements Store, AutoCloseable {
     @Override
     public boolean save(Item item) {
         return tx(session -> {
-            session.saveOrUpdate(item);
+            session.save(item);
+            return true;
+        });
+    }
+
+    @Override
+    public boolean update(int id) {
+        return tx(session -> {
+            session.createQuery(
+                    "update ru.job4j.todo.model.Item i set i.done = :done where i.id = :id"
+            ).setParameter("id", id)
+            .setParameter("done", true)
+            .executeUpdate();
             return true;
         });
     }

@@ -14,6 +14,8 @@ public interface Store {
 
     boolean save(Item item);
 
+    boolean update(int id);
+
     boolean delete(int id);
 
     List<User> findAllUser();
