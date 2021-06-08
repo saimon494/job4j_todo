@@ -17,7 +17,6 @@ function login() {
         let email = $('#email');
         let password = $('#password');
         let div = '';
-        console.log(div);
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8080/todo/login',

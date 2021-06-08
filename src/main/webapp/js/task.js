@@ -55,7 +55,6 @@ function loadCategory() {
 
 function loadTable() {
     let showAll = $('#show-all')[0].checked;
-    console.log("showAll = " + showAll);
     $.ajax({
         type: 'GET',
         url: 'http://localhost:8080/todo/item',
@@ -74,8 +73,12 @@ function loadTable() {
             catStr = catStr.substring(0, catStr.length - 2);
             table += '<td class="align-middle">' + catStr + '</td>';
             table += '<td class="align-middle">' + el.created + '</td>';
+            let div = '';
             if (el.user === undefined) {
-                table += '<td class="align-middle">Anonymous</td>';
+                div += '<div class="alert alert-danger mt-3 mb-0" role="alert" id="msg">'
+                    + 'Необходимо войти или зарегистрироваться' + '</div>';
+                $('p').html(div);
+                return;
             } else {
                 table += '<td class="align-middle">' + el.user.name + '</td>';
             }
@@ -120,6 +123,7 @@ function addItem() {
             });
         }
     }
+    let user = el.user
     const item = {
         description: desc,
         categories: categories

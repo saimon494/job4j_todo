@@ -45,24 +45,23 @@
                 <form>
                     <div class="form-group row mb-0">
                         <div class="form-group col-md-6">
-                            <label for="desc" style="width: 100%;">Добавьте задание
-                                <textarea class="form-control" id="desc" title="Описание"
-                                          placeholder="Описание" rows="3">
+                            <label for="desc" style="width: 100%;">Добавьте задание</label>
+                                <textarea class="form-control" id="desc" placeholder="Описание">
                                 </textarea>
-                            </label>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="categories" style="width: 80%; margin-bottom: 0">Выберите категорию</label>
+                        <div class="form-group col-md-4 my-auto">
+                            <label for="categories" style="width: 80%;">Выберите категорию</label>
                             <select multiple class="form-control" id="categories"
                                     style="width: 80%; margin-bottom: 0"></select>
                         </div>
-                        <div class="form-group col-md-2 pl-0 pt-4">
+                        <div class="form-group col-md-2 pl-0 my-auto">
                             <label for="btn">
                                 <button type="button" onclick="addItem()" class="btn btn-primary" id="btn">Добавить
                                 </button>
                             </label>
                         </div>
                     </div>
+                    <p id="msg"></p>
                 </form>
             </div>
         </div>
