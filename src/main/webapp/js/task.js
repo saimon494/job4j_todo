@@ -73,15 +73,7 @@ function loadTable() {
             catStr = catStr.substring(0, catStr.length - 2);
             table += '<td class="align-middle">' + catStr + '</td>';
             table += '<td class="align-middle">' + el.created + '</td>';
-            let div = '';
-            if (el.user === undefined) {
-                div += '<div class="alert alert-danger mt-3 mb-0" role="alert" id="msg">'
-                    + 'Необходимо войти или зарегистрироваться' + '</div>';
-                $('p').html(div);
-                return;
-            } else {
-                table += '<td class="align-middle">' + el.user.name + '</td>';
-            }
+            table += '<td class="align-middle">' + el.user.name + '</td>';
             if (el.done === false) {
                 table += '<td style="text-align: center;">' +
                     '<div style="vertical-align: middle;">' +
@@ -123,20 +115,32 @@ function addItem() {
             });
         }
     }
-    let user = el.user
-    const item = {
-        description: desc,
-        categories: categories
-    };
     $.ajax({
-        type: 'PUT',
-        url: 'http://localhost:8080/todo/item',
-        data: JSON.stringify(item)
-    }).done(function () {
-        loadTable();
+        type: 'POST',
+        url: 'http://localhost:8080/todo/auth',
+        dataType: 'json'
+    }).done(function (data) {
+        if (data.name === undefined) {
+            alert("Необходимо войти или зарегистрироваться");
+        } else {
+            const item = {
+                description: desc,
+                categories: categories
+            };
+            $.ajax({
+                type: 'PUT',
+                url: 'http://localhost:8080/todo/item',
+                data: JSON.stringify(item)
+            }).done(function () {
+                loadTable();
+            }).fail(function () {
+                alert("Не удалось добавить задание");
+            });
+        }
     }).fail(function () {
-        alert("Не удалось добавить задание");
+        alert("Не удалось получить пользователя");
     });
+
 }
 
 function checkItem(id) {
