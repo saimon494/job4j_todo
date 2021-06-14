@@ -29,5 +29,7 @@
         <mapping class="ru.job4j.mapping.model.Driver"/>
         <mapping class="ru.job4j.mapping.model.Engine"/>
         <mapping class="ru.job4j.hql.Candidate"/>
+        <mapping class="ru.job4j.hql.JobBase"/>
+        <mapping class="ru.job4j.hql.Job"/>
     </session-factory>
 </hibernate-configuration>

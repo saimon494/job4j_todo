@@ -15,6 +15,9 @@ public class Candidate {
     private int experience;
     private int salary;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private JobBase jobBase;
+
     public Candidate() {
     }
 
@@ -58,6 +61,14 @@ public class Candidate {
         this.salary = salary;
     }
 
+    public JobBase getJobBase() {
+        return jobBase;
+    }
+
+    public void setJobBase(JobBase jobBase) {
+        this.jobBase = jobBase;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -82,6 +93,7 @@ public class Candidate {
                 + ", name='" + name + '\''
                 + ", experience=" + experience
                 + ", salary=" + salary
+                + ", jobBase=" + jobBase
                 + '}';
     }
 }

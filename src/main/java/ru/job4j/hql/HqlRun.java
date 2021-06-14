@@ -17,6 +17,15 @@ public class HqlRun implements AutoCloseable {
     private final SessionFactory sf = new MetadataSources(registry)
             .buildMetadata().buildSessionFactory();
 
+    public JobBase save(JobBase jobBase) {
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
+            session.save(jobBase);
+            session.getTransaction().commit();
+        }
+        return jobBase;
+    }
+
     public Candidate save(Candidate candidate) {
         try (Session session = sf.openSession()) {
             session.beginTransaction();
@@ -40,7 +49,13 @@ public class HqlRun implements AutoCloseable {
         Candidate candidate;
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-            candidate = session.find(Candidate.class, id);
+            Query query = session.createQuery(
+                    "select c from Candidate c "
+                    + "join fetch c.jobBase jb "
+                    + "join fetch  jb.jobs "
+                    + "where c.id = :id");
+            query.setParameter("id", id);
+            candidate = (Candidate) query.uniqueResult();
             session.getTransaction().commit();
         }
         return candidate;
