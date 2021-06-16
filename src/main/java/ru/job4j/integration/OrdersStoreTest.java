@@ -24,7 +24,7 @@ public class OrdersStoreTest {
         pool.setUrl("jdbc:hsqldb:mem:tests;sql.syntax_pgs=true");
         pool.setUsername("sa");
         pool.setPassword("");
-        pool.setMaxTotal(2);
+        pool.setMaxTotal(5);
         var builder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream("./db/update_002.sql")))
@@ -33,6 +33,7 @@ public class OrdersStoreTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        pool.getConnection().prepareStatement("DROP TABLE IF EXISTS orders").executeUpdate();
         pool.getConnection().prepareStatement(builder.toString()).executeUpdate();
     }
 
