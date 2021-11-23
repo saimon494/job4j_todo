@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.job4j</groupId>
-    <artifactId>job4j_todo</artifactId>
-    <version>1.0</version>
+    <artifactId>todo</artifactId>
+    <version>2</version>
     <packaging>war</packaging>
 
     <name>job4j_todo</name>
