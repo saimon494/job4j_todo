@@ -1,3 +1,6 @@
+drop table if exists item cascade;
+drop table if exists i_user cascade;
+
 create table i_user
 (
     id       serial primary key,
